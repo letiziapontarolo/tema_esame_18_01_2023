@@ -34,7 +34,7 @@ public class FXMLController {
     private Button btnPercorso; // Value injected by FXMLLoader
 
     @FXML // fx:id="cmbProvider"
-    private ComboBox<?> cmbProvider; // Value injected by FXMLLoader
+    private ComboBox<String> cmbProvider; // Value injected by FXMLLoader
 
     @FXML // fx:id="txtDistanza"
     private TextField txtDistanza; // Value injected by FXMLLoader
@@ -51,6 +51,9 @@ public class FXMLController {
     @FXML
     void doAnalisiGrafo(ActionEvent event) {
     	
+    	txtResult.appendText("Vertici con più vicini:\n");
+    	txtResult.appendText(this.model.analisiVicini() + "\n");
+    	
     }
 
     @FXML
@@ -60,6 +63,40 @@ public class FXMLController {
 
     @FXML
     void doCreaGrafo(ActionEvent event) {
+    	
+    	txtResult.clear();
+    	String provider = cmbProvider.getSelectionModel().getSelectedItem();
+    	String s = txtDistanza.getText();
+    	
+    	if (provider == "") {
+    		 txtResult.setText("Perfavore seleziona un provider!\n");
+    		 return;
+    		 }
+    	
+    	double soglia = 0;
+    	if (s == "") {
+    	 txtResult.setText("Perfavore inserisci una distanza!\n");
+    	 return;
+    	 }
+    	try {
+    		soglia = Double.parseDouble(s);
+    	 } catch (NumberFormatException e) {
+    	 e.printStackTrace();
+    	 return;
+    	 }
+    	if (soglia < 0) {
+    	 txtResult.appendText("Perfavore inserisci una distanza positiva!\n");
+    	 return;
+    	 }
+    	
+    	this.model.creaGrafo(provider, soglia);
+    	txtResult.appendText("Grafo creato!\n");
+    	txtResult.appendText("#VERTICI: " + this.model.numeroVertici() + "\n");
+    	txtResult.appendText("#ARCHI: " + this.model.numeroArchi() + "\n");
+    	
+    	
+    	
+    	
     	
     }
 
@@ -77,5 +114,7 @@ public class FXMLController {
 
     public void setModel(Model model) {
     	this.model = model;
+    	cmbProvider.getItems().addAll(this.model.listaProvider());
+
     }
 }
