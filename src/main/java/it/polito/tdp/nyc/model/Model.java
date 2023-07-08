@@ -12,6 +12,10 @@ import org.jgrapht.Graphs;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 
+import com.javadocmd.simplelatlng.LatLng;
+import com.javadocmd.simplelatlng.LatLngTool;
+import com.javadocmd.simplelatlng.util.LengthUnit;
+
 import it.polito.tdp.nyc.db.NYCDao;
 
 public class Model {
@@ -30,24 +34,6 @@ public class Model {
 		return this.dao.listaProvider();
 	}
 	
-	public double distanza(double lat1, double lon1, double lat2, double lon2) {
-		
-		if ((lat1 == lat2) && (lon1 == lon2)) {
-			return 0;
-		}
-		else {
-			double theta = lon1 - lon2;
-			double dist = Math.sin(Math.toRadians(lat1)) * Math.sin(Math.toRadians(lat2)) + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) * Math.cos(Math.toRadians(theta));
-			dist = Math.acos(dist);
-			dist = Math.toDegrees(dist);
-			dist = dist * 60 * 1.1515;
-			
-			dist = dist * 1.609344;
-			return dist;
-		
-		
-	}
-	}
 	
 	public void creaGrafo(String provider, double soglia) {
 		
@@ -60,7 +46,9 @@ public class Model {
 		for (Location l1 : idMap.values()) {
 			for (Location l2 : idMap.values()) 
 				if (l1.getName().compareTo(l2.getName())>0) {
-					double distanza = distanza(l1.getLat(), l1.getLon(), l2.getLat(), l2.getLon());
+					LatLng ll1 = new LatLng(l1.getLat(), l1.getLon());
+					LatLng ll2 = new LatLng(l2.getLat(), l2.getLon());
+					double distanza = LatLngTool.distance(ll1, ll2, LengthUnit.KILOMETER);
 					if (distanza <= soglia) {
 						Graphs.addEdgeWithVertices(this.grafo, l1, l2, distanza);
 						
