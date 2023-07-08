@@ -23,7 +23,6 @@ public class Model {
 	private Graph<Location, DefaultWeightedEdge> grafo;
 	private NYCDao dao;
 	private Map<String, Location> idMap;
-	private List<Arco> archi;
 	
 	public Model() {
 		
